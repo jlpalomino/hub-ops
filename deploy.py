@@ -61,7 +61,7 @@ def setup_helm():
 
 def setup_docker():
     subprocess.check_output(['docker', 'login',
-                             '-u', 'earthlabhubops',
+                             '-u', 'earthlabcu',
                              '-p', open("secrets/dockerhub").read().strip()])
 
 
@@ -267,7 +267,7 @@ def main():
     argparser.add_argument(
         'chartname',
         help="Select which chart to deploy",
-        choices=['staginghub', 'ea-hub', 'wshub', 'bootcamp-hub', 'monitoring']
+        choices=['staginghub', 'ea-hub', 'nbgrader-hub', 'monitoring']
     )
 
     args = argparser.parse_args()

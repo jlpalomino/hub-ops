@@ -2,11 +2,11 @@ jupyterhub:
   hub:
     nodeSelector:
       cloud.google.com/gke-nodepool: core-pool
-    baseUrl: /staginghub/
+    baseUrl: /nbgrader-hub/
     annotations:
       prometheus.io/scrape: "true"
       # this needs to start with the value of `hub.baseUrl`
-      prometheus.io/path: /staginghub/hub/metrics
+      prometheus.io/path: /nbgrader-hub/hub/metrics
     resources:
       requests:
         cpu: 200m
@@ -17,7 +17,7 @@ jupyterhub:
   singleuser:
     image:
       # tag will be set by travis on deployment
-      name: earthlabhubops/ea-k8s-user-staginghub
+      name: earthlabhubops/ea-k8s-user-nbgrader-hub
       tag: set-on-deployment
     startTimeout: 600
     cpu:
@@ -26,14 +26,6 @@ jupyterhub:
     memory:
       guarantee: 500M
       limit: 500M
-    lifecycleHooks:
-      postStart:
-        exec:
-          command:
-            - "sh"
-            - "-c"
-            - >
-              gitpuller https://github.com/earthlab-education/earth-analytics-bootcamp-fall-2019 master ea-homework-notebooks;
   proxy:
     nodeSelector:
       cloud.google.com/gke-nodepool: core-pool
@@ -52,7 +44,7 @@ jupyterhub:
     hosts:
       - hub.earthdatascience.org
     annotations:
-      nginx.ingress.kubernetes.io/proxy-body-size: 64m
+      ingress.kubernetes.io/proxy-body-size: 64m
       kubernetes.io/ingress.class: nginx
       kubernetes.io/tls-acme: "true"
     tls:
@@ -61,18 +53,21 @@ jupyterhub:
           - hub.earthdatascience.org
 
   auth:
+    type: github
     admin:
       access: true
       users:
         - kcranston
         - lwasser
-        - jlpalomino
     whitelist:
       users:
+        - earth-lab
         - kcranston
         - lwasser
         - jlpalomino
-        - eastudent
-    type: github
+        - nkorinek
+        - wino6687
+        - mbjoseph
+        - lherwehe
     github:
-      callbackUrl: "https://hub.earthdatascience.org/staginghub/hub/oauth_callback"
+      callbackUrl: "https://hub.earthdatascience.org/nbgrader-hub/hub/oauth_callback"

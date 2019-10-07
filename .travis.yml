@@ -19,15 +19,12 @@ install:
   # Stage 1: Install pytest + test dependencies
   pip install -U pyyaml pytest requests sphinx sphinx-autobuild
 script:
-- |
+- | 
   # Build staginghub
   python ./deploy.py --no-setup --build staginghub
 - |
-  # Build earthhub
+  # Build earth-analytics-hub
   python ./deploy.py --no-setup --build ea-hub
-- |
-  # Build bootcamp-hub
-  python ./deploy.py --no-setup --build bootcamp-hub
 - |
   # Build documentation
   pushd docs && make html && popd
@@ -42,11 +39,11 @@ before_deploy:
 - |
   # Stage 1: Install Kubectl
   mkdir -p ${HOME}/bin
-  curl -L https://storage.googleapis.com/kubernetes-release/release/v1.9.0/bin/linux/amd64/kubectl > ${HOME}/bin/kubectl
+  curl -L https://storage.googleapis.com/kubernetes-release/release/v1.12.8/bin/linux/amd64/kubectl > ${HOME}/bin/kubectl
   chmod +x ${HOME}/bin/kubectl
 - |
   # Stage 1: Install helm
-  curl -L https://storage.googleapis.com/kubernetes-helm/helm-v2.9.1-linux-amd64.tar.gz | tar --directory ${HOME} --extract --gzip --file -
+  curl -L https://storage.googleapis.com/kubernetes-helm/helm-v2.14.2-linux-amd64.tar.gz | tar --directory ${HOME} --extract --gzip --file -
   mv ${HOME}/linux-amd64/helm ${HOME}/bin/helm
 - |
   # Stage 1: Install git-crypt
@@ -66,17 +63,14 @@ before_deploy:
   helm init --client-only
   helm repo add jupyterhub https://jupyterhub.github.io/helm-chart
   helm repo update
-- |
+#- |
   # Stage 3, Step 1: Deploy the staginghub
-  python ./deploy.py --build --push --deploy staginghub
+  #python ./deploy.py --build --push --deploy staginghub
 - |
-  # Stage 3, Step 2: Deploy the earthhub
+  # Stage 3, Step 2: Deploy the earth-analytics-hub
   python ./deploy.py --build --push --deploy ea-hub
 - |
-  # Stage 3, Step 3: Deploy the bootcamp-hub
-  python ./deploy.py --build --push --deploy bootcamp-hub
-- |
-  # Stage 3, Step 4: Deploy monitoring of the hubs
+  # Stage 3, Step 5: Deploy monitoring of the hubs
   python ./deploy.py --deploy monitoring
 
 
